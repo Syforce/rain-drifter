@@ -1,0 +1,24 @@
+doctype html
+head
+	title= talent.title + ' - N E R D Productions'
+	link(rel='stylesheet', href='/style.css')
+	script(src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous")
+	script(src='/code.js')
+.container.talent
+	.header
+	.content
+		.description
+			.details
+				.title= talent.title
+				.about= talent.about
+			.avatar
+		.gallery
+			for media in talent.medias
+				.media(class= (media.__t == 'Video' ? 'video' : 'image'))
+					.credits
+						span= media.title
+					if media.__t === 'Video'
+						video(loop muted data-video= media.path)
+							source(src= media.preview)
+					else if media.__t === 'Image'
+						img(src= media.originalImage)

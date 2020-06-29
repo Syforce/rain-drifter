@@ -1,0 +1,11 @@
+doctype html
+head
+	title Talent - N E R D Productions
+	link(rel='stylesheet', href='/style.css')
+.container.talents
+	.header
+	.content
+		for talent in talents
+			a.talent(href="/talent/" + talent.title)
+				.title= talent.title
+				img(src=talent.listingImage)
