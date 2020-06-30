@@ -32,4 +32,8 @@ export class TalentManager {
 
 		return talent;
 	}
+
+	public createTalent(body): Promise<Talent> {
+		return this.talentDatastore.create(body);
+	}
 }
