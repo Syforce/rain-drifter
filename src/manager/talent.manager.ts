@@ -13,7 +13,7 @@ export class TalentManager {
 
 	constructor() {
 		this.iceContainerService = IceContainerService.getInstance();
-		this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name);
+		this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
 		this.mediaDatastore = this.iceContainerService.getDatastore(MediaDatastore.name) as MediaDatastore;
 	}
 
@@ -35,5 +35,9 @@ export class TalentManager {
 
 	public createTalent(body): Promise<Talent> {
 		return this.talentDatastore.create(body);
+	}
+
+	public getSortedTalents(sortOptions): Promise<Array<Talent>> {
+		return this.talentDatastore.getSorted(sortOptions);
 	}
 }

@@ -12,6 +12,11 @@ export class TalentRouter extends AbstractRouter {
         });
         
         this.post({
+            url: '/api/talents',
+            callback: this.getSortedTalents.bind(this)
+        })
+
+        this.post({
             url: '/api/talent',
             callback: this.createTalent.bind(this)
         });
@@ -37,6 +42,12 @@ export class TalentRouter extends AbstractRouter {
         console.log(body);
 
         return this.talentManager.createTalent(body);
+    }
+
+    private getSortedTalents(request: Request): Promise<Array<Talent>> {
+        const body = request.body;
+
+        return this.talentManager.getSortedTalents(body);
     }
 }
 
