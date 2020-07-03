@@ -7,7 +7,7 @@
     "dependencies": {
         "express": "^4.17.1",
         "fluent-ffmpeg": "^2.1.2",
-        "ice-container": "0.0.16",
+        "ice-container": "0.0.18",
         "pug": "^2.0.4",
         "waterfall-gate": "0.0.15"
     },

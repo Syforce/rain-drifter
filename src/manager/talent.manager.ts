@@ -37,12 +37,16 @@ export class TalentManager {
 		return this.talentDatastore.create(body);
 	}
 
-	public getSortedTalents(sortBy: string, orderBy: number): Promise<Array<Talent>> {
-		const options = {
-			sort: {}
+	public getPaginated(skip: number, limit: number, sortBy?: string, sortOrder?: number): Promise<Array<Talent>> {
+		let sortOptions;
+
+		// TODO: SQL Injection Error
+		if (sortBy && sortOrder) {
+			sortOptions = {
+				[sortBy]: sortOrder
+			}
 		}
-		options.sort[sortBy] = orderBy;
-		console.log(options);
-		return this.talentDatastore.getManyByOptions(options);
+
+		return this.talentDatastore.getPaginated(skip, limit, sortOptions);
 	}
 }

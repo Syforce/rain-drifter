@@ -10,11 +10,6 @@ export class TalentRouter extends AbstractRouter {
             url: '/api/talents',
             callback: this.getTalents.bind(this)
         });
-        
-        this.post({
-            url: '/api/talents',
-            callback: this.getSortedTalents.bind(this)
-        })
 
         this.post({
             url: '/api/talent',
@@ -28,7 +23,12 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private getTalents(request: Request): Promise<Array<Talent>> {
-        return this.talentManager.getTalents();
+        const skip: number = +request.query.skip;
+        const limit: number = +request.query.limit;
+        const sortBy: string = request.query.sortBy as string;
+        const sortOrder: number = +request.query.sortOrder;
+
+        return this.talentManager.getPaginated(skip, limit, sortBy, sortOrder);
     }
     
     private getTalent(request: Request): Promise<Talent> {
@@ -39,15 +39,7 @@ export class TalentRouter extends AbstractRouter {
 
     private createTalent(request: Request): Promise<Talent> {
         const body = request.body;
-        console.log(body);
 
         return this.talentManager.createTalent(body);
-    }
-
-    private getSortedTalents(request: Request): Promise<Array<Talent>> {
-        const sortBy: string = request.query.sortBy as string;
-        const orderBy: number = +request.query.orderBy;
-
-        return this.talentManager.getSortedTalents(sortBy, orderBy);
     }
 }
