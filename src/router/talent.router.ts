@@ -3,12 +3,12 @@ import { TalentManager } from '../manager/talent.manager';
 import { Talent } from '../model/talent.model';
 
 export class TalentRouter extends AbstractRouter {
-	private talentManager: TalentManager = new TalentManager();
+    private talentManager: TalentManager = new TalentManager();
 
-	public initRoutes() {
-		this.get({
-			url: '/api/talents',
-			callback: this.getTalents.bind(this)
+    public initRoutes() {
+        this.get({
+            url: '/api/talents',
+            callback: this.getTalents.bind(this)
         });
         
         this.post({
@@ -25,10 +25,10 @@ export class TalentRouter extends AbstractRouter {
             url: '/api/talent/:title',
             callback: this.getTalent.bind(this)
         })
-	}
+    }
 
-	private getTalents(request: Request): Promise<Array<Talent>> {
-		return this.talentManager.getTalents();
+    private getTalents(request: Request): Promise<Array<Talent>> {
+        return this.talentManager.getTalents();
     }
     
     private getTalent(request: Request): Promise<Talent> {
@@ -45,9 +45,9 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private getSortedTalents(request: Request): Promise<Array<Talent>> {
-        const body = request.body;
+        const sortBy: string = request.query.sortBy as string;
+        const orderBy: number = +request.query.orderBy;
 
-        return this.talentManager.getSortedTalents(body);
+        return this.talentManager.getSortedTalents(sortBy, orderBy);
     }
 }
-
