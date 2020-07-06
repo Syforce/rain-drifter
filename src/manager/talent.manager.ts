@@ -46,7 +46,7 @@ export class TalentManager {
 				[sortBy]: sortOrder
 			}
 		}
-
+		
 		return this.talentDatastore.getPaginated(skip, limit, sortOptions);
 	}
 }
