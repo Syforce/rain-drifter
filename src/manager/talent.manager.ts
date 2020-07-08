@@ -37,7 +37,8 @@ export class TalentManager {
 		return this.talentDatastore.create(body);
 	}
 
-	public getPaginated(skip: number, limit: number, sortBy?: string, sortOrder?: number): Promise<Array<Talent>> {
+	public getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<Array<Talent>> {
+		const skip = (currentPage - 1) * itemsPerPage;
 		let sortOptions;
 
 		// TODO: SQL Injection Error
@@ -46,7 +47,7 @@ export class TalentManager {
 				[sortBy]: sortOrder
 			}
 		}
-		
-		return this.talentDatastore.getPaginated(skip, limit, sortOptions);
+
+		return this.talentDatastore.getPaginated(skip, itemsPerPage, sortOptions);
 	}
 }

@@ -23,12 +23,12 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private getTalents(request: Request): Promise<Array<Talent>> {
-        const skip: number = +request.query.skip;
-        const limit: number = +request.query.limit;
+        const currentPage: number = +request.query.currentPage;
+        const itemsPerPage: number = +request.query.itemsPerPage;
         const sortBy: string = request.query.sortBy as string;
         const sortOrder: number = +request.query.sortOrder;
 
-        return this.talentManager.getPaginated(skip, limit, sortBy, sortOrder);
+        return this.talentManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
     }
     
     private getTalent(request: Request): Promise<Talent> {
