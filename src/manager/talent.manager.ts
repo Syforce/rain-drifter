@@ -27,6 +27,7 @@ export class TalentManager {
 		});
 
 		if (talent) {
+			// TODO: CHECK THIS LINE
 			talent.medias = JSON.parse(JSON.stringify(await this.mediaDatastore.getPublishedMediasByTalent(talent._id)));
 		}
 
@@ -37,9 +38,10 @@ export class TalentManager {
 		return this.talentDatastore.create(body);
 	}
 
-	public getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<Array<Talent>> {
+	public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
 		const skip = (currentPage - 1) * itemsPerPage;
-		let sortOptions;
+		let sortOptions: any;
+		let data: any;
 
 		// TODO: SQL Injection Error
 		if (sortBy && sortOrder) {
@@ -48,6 +50,14 @@ export class TalentManager {
 			}
 		}
 
-		return this.talentDatastore.getPaginated(skip, itemsPerPage, sortOptions);
+		const list: Array<Talent> = await this.talentDatastore.getPaginated(skip, itemsPerPage, sortOptions);
+		const total: number = await this.talentDatastore.count();
+
+		data = {
+			list: list,
+			total: total
+		}
+
+		return data;
 	}
 }
