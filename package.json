@@ -7,8 +7,10 @@
     "dependencies": {
         "express": "^4.17.1",
         "fluent-ffmpeg": "^2.1.2",
+        "gravity-cloud": "0.0.1",
         "ice-container": "0.0.21",
         "pug": "^2.0.4",
+        "rock-gather": "0.0.6",
         "waterfall-gate": "0.0.15"
     },
     "devDependencies": {

@@ -1,5 +1,7 @@
 import { IceContainerService } from 'ice-container';
 import { WaterfallGateService } from 'waterfall-gate';
+import { RockGatherService } from 'rock-gather';
+import { GravityCloudService } from 'gravity-cloud';
 import { join } from 'path';
 import * as Express from 'express';
 
@@ -25,6 +27,8 @@ import { CONFIG } from './config';
 class App {
 	private iceContainerService: IceContainerService;
 	private waterfallGateService: WaterfallGateService;
+	private rockGatherService: RockGatherService;
+	private gravityCloudService: GravityCloudService;
 	private talentManager: TalentManager;
 	private meidaManager: MediaManager;
 	private imageManager: ImageManager;
@@ -44,6 +48,7 @@ class App {
 		
 		this.startDatabase();
 		this.startServer();
+		this.startStorage();
 	}
 
 	private startDatabase() {
@@ -60,9 +65,16 @@ class App {
 		this.videoManager = new VideoManager();
 	}
 
-	private startServer() {
-		const port = parseInt(process.env.PORT) || 3000;
+	private startStorage() {
+			this.rockGatherService = RockGatherService.getInstance();
+			this.gravityCloudService = GravityCloudService.getInstance();
 
+			this.rockGatherService.init(CONFIG.file);
+			this.gravityCloudService.init(CONFIG.storage);
+
+	}
+
+	private startServer() {
 		this.app.use((request, response, next) => {
 			response.header('Access-Control-Allow-Origin', "*");
 			response.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');

@@ -1,9 +1,17 @@
 import { AbstractRouter, Request } from 'waterfall-gate';
 import { TalentManager } from '../manager/talent.manager';
 import { Talent } from '../model/talent.model';
+import { RockGatherService } from 'rock-gather';
 
 export class TalentRouter extends AbstractRouter {
     private talentManager: TalentManager = new TalentManager();
+    private rockGatherService: RockGatherService;
+
+    constructor(routeMap) {
+        super(routeMap);
+
+        this.rockGatherService = RockGatherService.getInstance();
+    }
 
     public initRoutes() {
         this.get({
@@ -13,7 +21,8 @@ export class TalentRouter extends AbstractRouter {
 
         this.post({
             url: '/api/talent',
-            callback: this.createTalent.bind(this)
+            callback: this.createTalent.bind(this),
+            middleware: [this.rockGatherService.getMiddleware('storeImage')]
         });
 
         this.get({
@@ -39,7 +48,8 @@ export class TalentRouter extends AbstractRouter {
 
     private createTalent(request: Request): Promise<Talent> {
         const body = request.body;
+        const filePath = ((request as any).file.path);
 
-        return this.talentManager.createTalent(body);
+        return this.talentManager.createTalent(body, filePath);
     }
 }

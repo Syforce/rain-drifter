@@ -5,14 +5,17 @@ import { MediaDatastore } from '../datastore/media.datastore';
 
 import { Talent } from '../model/talent.model';
 import { Media } from '../model/media.model';
+import { GravityCloudService } from 'gravity-cloud';
 
 export class TalentManager {
 	private iceContainerService: IceContainerService;
 	private talentDatastore: TalentDatastore;
 	private mediaDatastore: MediaDatastore;
+	private gravityCloudService: GravityCloudService;
 
 	constructor() {
 		this.iceContainerService = IceContainerService.getInstance();
+		this.gravityCloudService = GravityCloudService.getInstance();
 		this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
 		this.mediaDatastore = this.iceContainerService.getDatastore(MediaDatastore.name) as MediaDatastore;
 	}
@@ -34,7 +37,8 @@ export class TalentManager {
 		return talent;
 	}
 
-	public createTalent(body): Promise<Talent> {
+	public createTalent(body, path): Promise<Talent> {
+		this.gravityCloudService.upload(path);
 		return this.talentDatastore.create(body);
 	}
 
