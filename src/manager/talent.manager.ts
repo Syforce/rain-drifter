@@ -1,11 +1,12 @@
 import { IceContainerService } from 'ice-container';
+import { GravityCloudService } from 'gravity-cloud';
 
 import { TalentDatastore } from '../datastore/talent.datastore';
 import { MediaDatastore } from '../datastore/media.datastore';
 
+import * as fs from 'fs';
 import { Talent } from '../model/talent.model';
 import { Media } from '../model/media.model';
-import { GravityCloudService } from 'gravity-cloud';
 
 export class TalentManager {
 	private iceContainerService: IceContainerService;
@@ -37,8 +38,14 @@ export class TalentManager {
 		return talent;
 	}
 
-	public createTalent(body, path): Promise<Talent> {
-		this.gravityCloudService.upload(path);
+	public async createTalent(body: any): Promise<Talent> {
+		await this.gravityCloudService.upload(body.listingImage);
+		fs.unlink(body.listingImage, (err) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+
 		return this.talentDatastore.create(body);
 	}
 

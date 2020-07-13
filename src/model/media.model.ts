@@ -6,6 +6,7 @@ export const MediaSchema: Schema = new Schema({
 		type: Boolean,
 		default: false
 	},
+	path: String,
 	talent: {
 		type: Schema.Types.ObjectId,
 		ref: 'Talent'
@@ -19,4 +20,5 @@ export interface Media {
 	title: string;
 	talent: string;
 	published: boolean;
+	path: string;
 }

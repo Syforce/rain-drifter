@@ -47,9 +47,10 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private createTalent(request: Request): Promise<Talent> {
-        const body = request.body;
-        const filePath = ((request as any).file.path);
+        let body = request.body;
+        const listingImage = ((request as any).file.path);
+        body['listingImage'] = listingImage;
 
-        return this.talentManager.createTalent(body, filePath);
+        return this.talentManager.createTalent(body);
     }
 }
