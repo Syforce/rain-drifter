@@ -51,9 +51,9 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private createTalent(request: Request): Promise<Talent> {
-        let body = [...request.body];
+        let body: any = [...request.body];
         const listingImage = (request as any).file.path;
-        body['listingImage'] = listingImage;
+        body.listingImage = listingImage;
 
         return this.talentManager.createTalent(body);
     }
