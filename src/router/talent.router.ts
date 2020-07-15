@@ -37,7 +37,11 @@ export class TalentRouter extends AbstractRouter {
         const sortBy: string = request.query.sortBy as string;
         const sortOrder: number = +request.query.sortOrder;
 
-        return this.talentManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
+        if (currentPage && itemsPerPage) {
+            return this.talentManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
+        } else {
+            return this.talentManager.getTalents();
+        }
     }
     
     private getTalent(request: Request): Promise<Talent> {
@@ -47,9 +51,10 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private createTalent(request: Request): Promise<Talent> {
-        const body = request.body;
-        const filePath = ((request as any).file.path);
+        let body: any = [...request.body];
+        const listingImage = (request as any).file.path;
+        body.listingImage = listingImage;
 
-        return this.talentManager.createTalent(body, filePath);
+        return this.talentManager.createTalent(body);
     }
 }
