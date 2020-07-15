@@ -5,7 +5,7 @@ export const VideoSchema: Schema = new Schema({
     preview: String,
     thumbnails: [String]
 }, {
-	timestamps: true
+    timestamps: true
 });
 
 export interface Video extends Media {

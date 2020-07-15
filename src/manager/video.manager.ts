@@ -6,21 +6,21 @@ import { Talent } from 'src/model/talent.model';
 
 
 export class VideoManager {
-	private iceContainerService: IceContainerService;
+    private iceContainerService: IceContainerService;
     private videoDatastore: VideoDatastore;
     private talentDatastore: TalentDatastore;
 
-	constructor() {
-		this.iceContainerService = IceContainerService.getInstance();
+    constructor() {
+        this.iceContainerService = IceContainerService.getInstance();
         this.videoDatastore = this.iceContainerService.getDatastore(VideoDatastore.name) as VideoDatastore;
         this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
-	}
+    }
 
-	public getVideos(): Promise<Array<Video>> {
-		return this.videoDatastore.getAll();
-	}
+    public getVideos(): Promise<Array<Video>> {
+        return this.videoDatastore.getAll();
+    }
 
-	public async createVideo(body): Promise<Video> {
+    public async createVideo(body): Promise<Video> {
         const talent: Talent = await this.talentDatastore.getById(body.talent);
         const video: Video = await this.videoDatastore.create(body);
 
@@ -36,5 +36,5 @@ export class VideoManager {
         this.talentDatastore.getOneByOptionsAndUpdate(options, update);
 
         return video;
-	}
+    }
 }
