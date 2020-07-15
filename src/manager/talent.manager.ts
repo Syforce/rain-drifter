@@ -4,7 +4,7 @@ import { GravityCloudService } from 'gravity-cloud';
 import { TalentDatastore } from '../datastore/talent.datastore';
 import { MediaDatastore } from '../datastore/media.datastore';
 
-import * as fs from 'fs';
+import { unlink } from 'fs';
 import { Talent } from '../model/talent.model';
 import { Media } from '../model/media.model';
 
@@ -40,7 +40,7 @@ export class TalentManager {
 
 	public async createTalent(body: any): Promise<Talent> {
 		await this.gravityCloudService.upload(body.listingImage);
-		fs.unlink(body.listingImage, (err) => {
+		unlink(body.listingImage, (err) => {
 			if (err) {
 				console.log(err);
 			}
