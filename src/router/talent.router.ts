@@ -37,7 +37,11 @@ export class TalentRouter extends AbstractRouter {
         const sortBy: string = request.query.sortBy as string;
         const sortOrder: number = +request.query.sortOrder;
 
-        return this.talentManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
+        if (currentPage && itemsPerPage) {
+            return this.talentManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
+        } else {
+            return this.talentManager.getTalents();
+        }
     }
     
     private getTalent(request: Request): Promise<Talent> {
