@@ -34,6 +34,7 @@ export class ImageRouter extends AbstractRouter {
         let body: any = JSON.parse(JSON.stringify(request.body));
         const originalImage = (request as any).files.originalImage[0].path;
         const thumbnail = (request as any).files.thumbnailImage[0].path;
+
         body.path = originalImage;
         body.thumbnail = thumbnail;
 
