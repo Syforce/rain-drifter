@@ -26,8 +26,11 @@ export class ImageManager {
 
 	public async createImage(body: any): Promise<Image> {
 		// CLOUDINARY UPLOAD
-		const urlOriginalImage: string = await this.gravityCloudService.upload(body.path);
-		const urlThumbnail: string = await this.gravityCloudService.upload(body.thumbnail);
+		const promise1 = this.gravityCloudService.upload(body.path);
+		const promise2 = this.gravityCloudService.upload(body.thumbnail);
+		const values: Array<string> = await Promise.all([promise1, promise2]);
+		const urlOriginalImage: string = values[0];
+		const urlThumbnail: string = values[1];
 
 		unlink(body.path, (err) => {
 			if (err) {
