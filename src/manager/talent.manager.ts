@@ -39,12 +39,15 @@ export class TalentManager {
 	}
 
 	public async createTalent(body: any): Promise<Talent> {
-		await this.gravityCloudService.upload(body.listingImage);
+		const url: string = await this.gravityCloudService.upload(body.listingImage);
+
 		unlink(body.listingImage, (err) => {
 			if (err) {
 				console.log(err);
 			}
 		});
+		
+		body.listingImage = url;
 
 		return this.talentDatastore.create(body);
 	}
