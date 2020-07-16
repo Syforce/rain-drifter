@@ -22,7 +22,7 @@ export class ImageRouter extends AbstractRouter {
         this.post({
             url: '/api/image',
             callback: this.createImage.bind(this),
-            middleware: [this.rockGatherService.getMiddleware('thumbnailImage')]
+            middleware: [this.rockGatherService.getMiddleware(['originalImage', 'thumbnailImage'])]
         });
     }
 
@@ -31,10 +31,11 @@ export class ImageRouter extends AbstractRouter {
     }
     
     private createImage(request: Request): Promise<Image> {
-        console.log(request);
         let body: any = JSON.parse(JSON.stringify(request.body));
-        const thumbnailImage = (request as any).file.path;
-        body.path = thumbnailImage;
+        const originalImage = (request as any).files.originalImage[0].path;
+        const thumbnail = (request as any).files.thumbnailImage[0].path;
+        body.path = originalImage;
+        body.thumbnail = thumbnail;
 
         return this.imageManager.createImage(body);
     }
