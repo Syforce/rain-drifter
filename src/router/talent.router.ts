@@ -22,7 +22,7 @@ export class TalentRouter extends AbstractRouter {
         this.post({
             url: '/api/talent',
             callback: this.createTalent.bind(this),
-            middleware: [this.rockGatherService.getMiddleware('storeImage')]
+            middleware: [this.rockGatherService.getMiddleware(['profileImage', 'profileCroppedImage', 'listingImage', 'listingCroppedImage'])]
         });
 
         this.get({
@@ -52,9 +52,15 @@ export class TalentRouter extends AbstractRouter {
 
     private createTalent(request: Request): Promise<Talent> {
         let body: any = JSON.parse(JSON.stringify(request.body));
-        const listingImage = (request as any).file.path;
+        const listingImage = (request as any).files.listingImage[0].path;
+        const listingCroppedImage = (request as any).files.listingCroppedImage[0].path;
+        const profileImage = (request as any).files.profileImage[0].path;
+        const profileCroppedImage = (request as any).files.profileCroppedImage[0].path;
         body.listingImage = listingImage;
-
+        body.profileImage = profileImage;
+        body.listingCroppedImage = listingCroppedImage;
+        body.profileCroppedImage = profileCroppedImage;
+        
         return this.talentManager.createTalent(body);
     }
 }

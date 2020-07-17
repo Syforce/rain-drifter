@@ -12,6 +12,9 @@ export const TalentSchema: Schema = new Schema({
 	website: String,
 	about: String,
 	listingImage: String,
+	profileImage: String,
+	listingCroppedImage: String,
+	profileCroppedImage: String,
 	medias: []
 }, {
 	timestamps: true
@@ -28,5 +31,8 @@ export interface Talent {
 	website?: string;
 	about?: string;
 	listingImage?: string;
+	profileImage?: string;
+	listingCroppedImage?: string;
+	profileCroppedImage?: string;
 	medias?: Array<Media>;
 }
