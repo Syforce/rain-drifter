@@ -63,5 +63,28 @@ export class ImageManager {
 		this.talentDatastore.getOneByOptionsAndUpdate(options, update);
 
 		return image;
+    }
+    
+    public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
+		const skip = (currentPage - 1) * itemsPerPage;
+		let sortOptions: any;
+		let data: any;
+
+		// TODO: SQL Injection Error
+		if (sortBy && sortOrder) {
+			sortOptions = {
+				[sortBy]: sortOrder
+			}
+		}
+
+		const list: Array<Talent> = await this.imageDatastore.getPaginated(skip, itemsPerPage, sortOptions);
+		const total: number = await this.imageDatastore.count();
+
+		data = {
+			list: list,
+			total: total
+		}
+
+		return data;
 	}
 }
