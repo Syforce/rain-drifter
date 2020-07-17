@@ -27,7 +27,16 @@ export class ImageRouter extends AbstractRouter {
     }
 
     private getImages(request: Request): Promise<Array<Image>> {
-        return this.imageManager.getImages();
+        const currentPage: number = +request.query.currentPage;
+        const itemsPerPage: number = +request.query.itemsPerPage;
+        const sortBy: string = request.query.sortBy as string;
+        const sortOrder: number = +request.query.sortOrder;
+
+        if (currentPage && itemsPerPage) {
+            return this.imageManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
+        } else {
+            return this.imageManager.getImages();
+        }
     }
     
     private createImage(request: Request): Promise<Image> {
