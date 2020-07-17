@@ -38,6 +38,16 @@ export class TalentManager {
 		return talent;
 	}
 
+	public deleteTempFiles(files: Array<string>) {
+		files.forEach( (file) => {
+			unlink(file, (err) => {
+				if (err) {
+					console.log(err);
+				}
+			});
+		});
+	}
+
 	public async createTalent(body: any): Promise<Talent> {
 		const promise1 = this.gravityCloudService.upload(body.listingImage);
 		const promise2 = this.gravityCloudService.upload(body.listingCroppedImage);
@@ -45,26 +55,7 @@ export class TalentManager {
 		const promise4 = this.gravityCloudService.upload(body.profileCroppedImage);
 		const values: Array<string> = await Promise.all([promise1, promise2, promise3, promise4]);
 
-		unlink(body.listingImage, (err) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-		unlink(body.listingCroppedImage, (err) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-		unlink(body.profileImage, (err) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-		unlink(body.profileCroppedImage, (err) => {
-			if (err) {
-				console.log(err);
-			}
-		});
+		this.deleteTempFiles([body.listingImage, body.listingCroppedImage, body.profileImage, body.profileCroppedImage]);	
 		
 		body.listingImage = values[0];
 		body.listingCroppedImage = values[1];
