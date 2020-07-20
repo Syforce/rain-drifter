@@ -3,6 +3,7 @@ import { Media } from './media.model';
 
 export const VideoSchema: Schema = new Schema({
     preview: String,
+    original: String,
     thumbnails: [String]
 }, {
     timestamps: true
@@ -10,5 +11,6 @@ export const VideoSchema: Schema = new Schema({
 
 export interface Video extends Media {
     preview: string;
+    original: string;
     thumbnails: [string];
 }
