@@ -26,8 +26,20 @@ export class TalentManager {
 	}
 
 	public async getTalent(id: string): Promise<Talent> {
-		console.log('id 2 ', id);
 		const talent: Talent = await this.talentDatastore.getById(id);
+
+		if (talent) {
+			// TODO: CHECK THIS LINE
+			talent.medias = JSON.parse(JSON.stringify(await this.mediaDatastore.getPublishedMediasByTalent(talent._id)));
+		}
+
+		return talent;
+	}
+
+	public async getTalentByTitle(title: string): Promise<Talent> {
+		const talent: Talent = await this.talentDatastore.getOneByOptions({
+			title
+		})
 
 		if (talent) {
 			// TODO: CHECK THIS LINE
