@@ -25,10 +25,9 @@ export class TalentManager {
 		return this.talentDatastore.getAll();
 	}
 
-	public async getTalent(title: string): Promise<Talent> {
-		const talent: Talent = await this.talentDatastore.getOneByOptions({
-			title
-		});
+	public async getTalent(id: string): Promise<Talent> {
+		console.log('id 2 ', id);
+		const talent: Talent = await this.talentDatastore.getById(id);
 
 		if (talent) {
 			// TODO: CHECK THIS LINE

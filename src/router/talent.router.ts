@@ -26,7 +26,7 @@ export class TalentRouter extends AbstractRouter {
         });
 
         this.get({
-            url: '/api/talent/:title',
+            url: '/api/talent/:id',
             callback: this.getTalent.bind(this)
         })
     }
@@ -45,9 +45,8 @@ export class TalentRouter extends AbstractRouter {
     }
     
     private getTalent(request: Request): Promise<Talent> {
-        const title: string = request.params.title;
-
-        return this.talentManager.getTalent(title);
+        const id: string = request.params.id;
+        return this.talentManager.getTalent(id);
     }
 
     private createTalent(request: Request): Promise<Talent> {
