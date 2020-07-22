@@ -31,11 +31,12 @@ export class TalentRouter extends AbstractRouter {
             callback: this.getTalent.bind(this)
         })
 
-        this.get({
-            url: '/api/talent/:title',
-            callback: this.getTalentByTitle.bind(this)
-        })
+        // this.get({
+        //     url: '/api/talent/:title',
+        //     callback: this.getTalentByTitle.bind(this)
+        // })
     }
+    
 
     private getTalentByTitle(request: Request): Promise<Talent> {
         const title: string = request.params.title;

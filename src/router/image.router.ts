@@ -18,6 +18,11 @@ export class ImageRouter extends AbstractRouter {
             url: '/api/images',
             callback: this.getImages.bind(this)
         });
+
+        this.get({
+            url: '/api/image/:id',
+            callback: this.getImageById.bind(this)
+        });
         
         this.post({
             url: '/api/image',
@@ -37,6 +42,11 @@ export class ImageRouter extends AbstractRouter {
         } else {
             return this.imageManager.getImages();
         }
+    }
+
+    private getImageById(request: Request): Promise<Image> {
+        const id: string = request.params.id;
+        return this.imageManager.getImageById(id);
     }
     
     private createImage(request: Request): Promise<Image> {
