@@ -78,7 +78,7 @@ export class ImageManager {
 		}
 
 		const list: Array<Talent> = await this.imageDatastore.getPaginated(skip, itemsPerPage, sortOptions);
-		const total: number = await this.imageDatastore.count();
+		const total: number = await this.imageDatastore.count({});
 
 		data = {
 			list: list,

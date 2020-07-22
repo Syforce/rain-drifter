@@ -78,7 +78,7 @@ export class TalentManager {
 		}
 
 		const list: Array<Talent> = await this.talentDatastore.getPaginated(skip, itemsPerPage, sortOptions);
-		const total: number = await this.talentDatastore.count();
+		const total: number = await this.talentDatastore.count({});
 
 		data = {
 			list: list,
