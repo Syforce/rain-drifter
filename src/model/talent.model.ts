@@ -12,7 +12,10 @@ export const TalentSchema: Schema = new Schema({
 	website: String,
 	about: String,
 	listingImage: String,
-	medias: []
+	medias: [{
+        type: Schema.ObjectId,
+        ref: 'Media'
+    }]
 }, {
 	timestamps: true
 });
