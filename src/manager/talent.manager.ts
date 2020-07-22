@@ -36,19 +36,6 @@ export class TalentManager {
 		return talent;
 	}
 
-	public async getTalentByTitle(title: string): Promise<Talent> {
-		const talent: Talent = await this.talentDatastore.getOneByOptions({
-			title
-		})
-
-		if (talent) {
-			// TODO: CHECK THIS LINE
-			talent.medias = JSON.parse(JSON.stringify(await this.mediaDatastore.getPublishedMediasByTalent(talent._id)));
-		}
-
-		return talent;
-	}
-
 	public deleteTempFiles(files: Array<string>) {
 		files.forEach( (file) => {
 			unlink(file, (err) => {
