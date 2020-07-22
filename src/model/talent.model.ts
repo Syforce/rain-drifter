@@ -15,7 +15,10 @@ export const TalentSchema: Schema = new Schema({
 	profileImage: String,
 	listingCroppedImage: String,
 	profileCroppedImage: String,
-	medias: []
+	medias: [{
+		type: Schema.ObjectId,
+		ref: 'Media'
+	}]
 }, {
 	timestamps: true
 });

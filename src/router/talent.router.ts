@@ -30,17 +30,6 @@ export class TalentRouter extends AbstractRouter {
             url: '/api/talent/:id',
             callback: this.getTalent.bind(this)
         })
-
-        // this.get({
-        //     url: '/api/talent/:title',
-        //     callback: this.getTalentByTitle.bind(this)
-        // })
-    }
-    
-
-    private getTalentByTitle(request: Request): Promise<Talent> {
-        const title: string = request.params.title;
-        return this.talentManager.getTalentByTitle(title);
     }
 
     private getTalents(request: Request): Promise<Array<Talent>> {
