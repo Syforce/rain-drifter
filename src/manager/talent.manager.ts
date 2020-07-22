@@ -25,10 +25,8 @@ export class TalentManager {
 		return this.talentDatastore.getAll();
 	}
 
-	public async getTalent(title: string): Promise<Talent> {
-		const talent: Talent = await this.talentDatastore.getOneByOptions({
-			title
-		});
+	public async getTalent(id: string): Promise<Talent> {
+		const talent: Talent = await this.talentDatastore.getById(id);
 
 		if (talent) {
 			// TODO: CHECK THIS LINE
@@ -38,16 +36,42 @@ export class TalentManager {
 		return talent;
 	}
 
-	public async createTalent(body: any): Promise<Talent> {
-		const url: string = await this.gravityCloudService.upload(body.listingImage);
+	public async getTalentByTitle(title: string): Promise<Talent> {
+		const talent: Talent = await this.talentDatastore.getOneByOptions({
+			title
+		})
 
-		unlink(body.listingImage, (err) => {
-			if (err) {
-				console.log(err);
-			}
+		if (talent) {
+			// TODO: CHECK THIS LINE
+			talent.medias = JSON.parse(JSON.stringify(await this.mediaDatastore.getPublishedMediasByTalent(talent._id)));
+		}
+
+		return talent;
+	}
+
+	public deleteTempFiles(files: Array<string>) {
+		files.forEach( (file) => {
+			unlink(file, (err) => {
+				if (err) {
+					console.log(err);
+				}
+			});
 		});
+	}
+
+	public async createTalent(body: any): Promise<Talent> {
+		const promise1 = this.gravityCloudService.upload(body.listingImage);
+		const promise2 = this.gravityCloudService.upload(body.listingCroppedImage);
+		const promise3 = this.gravityCloudService.upload(body.profileImage);
+		const promise4 = this.gravityCloudService.upload(body.profileCroppedImage);
+		const values: Array<string> = await Promise.all([promise1, promise2, promise3, promise4]);
+
+		this.deleteTempFiles([body.listingImage, body.listingCroppedImage, body.profileImage, body.profileCroppedImage]);	
 		
-		body.listingImage = url;
+		body.listingImage = values[0];
+		body.listingCroppedImage = values[1];
+		body.profileImage = values[2];
+		body.profileCroppedImage = values[3];
 
 		return this.talentDatastore.create(body);
 	}

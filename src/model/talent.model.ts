@@ -12,7 +12,10 @@ export const TalentSchema: Schema = new Schema({
 	website: String,
 	about: String,
 	listingImage: String,
-	medias: [{
+	profileImage: String,
+	listingCroppedImage: String,
+	profileCroppedImage: String,
+    medias: [{
         type: Schema.ObjectId,
         ref: 'Media'
     }]
@@ -31,5 +34,8 @@ export interface Talent {
 	website?: string;
 	about?: string;
 	listingImage?: string;
+	profileImage?: string;
+	listingCroppedImage?: string;
+	profileCroppedImage?: string;
 	medias?: Array<Media>;
 }

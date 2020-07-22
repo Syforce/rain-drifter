@@ -20,4 +20,8 @@ export class MediaManager {
 	public createMedia(body): Promise<Media> {
 		return this.mediaDatastore.create(body);
 	}
+
+	public getMediasByTalentId(id: string) {
+		return this.mediaDatastore.getManyByOptions({talent : id});
+	}
 }
