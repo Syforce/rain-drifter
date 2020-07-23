@@ -25,10 +25,8 @@ export class TalentManager {
 		return this.talentDatastore.getAll();
 	}
 
-	public async getTalent(title: string): Promise<Talent> {
-		const talent: Talent = await this.talentDatastore.getOneByOptions({
-			title
-		});
+	public async getTalent(id: string): Promise<Talent> {
+		const talent: Talent = await this.talentDatastore.getById(id);
 
 		if (talent) {
 			// TODO: CHECK THIS LINE
@@ -68,7 +66,6 @@ export class TalentManager {
 	public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
 		const skip = (currentPage - 1) * itemsPerPage;
 		let sortOptions: any;
-		let data: any;
 
 		// TODO: SQL Injection Error
 		if (sortBy && sortOrder) {
@@ -77,14 +74,26 @@ export class TalentManager {
 			}
 		}
 
-		const list: Array<Talent> = await this.talentDatastore.getPaginated(skip, itemsPerPage, sortOptions);
-		const total: number = await this.talentDatastore.count({});
+		const options = {
+			skip: skip,
+			limit: itemsPerPage,
+			sort: sortOptions
+		}
 
-		data = {
+		const list: Array<Talent> = await this.talentDatastore.getManyByOptions({}, options);
+		const total: number = await this.talentDatastore.count({});
+		
+		const data: any = {
 			list: list,
 			total: total
 		}
 
 		return data;
+	}
+
+	public updateTalentById(id: string, talent: Talent) {
+		return this.talentDatastore.getOneByOptionsAndUpdate({
+			_id: id
+		}, talent);
 	}
 }

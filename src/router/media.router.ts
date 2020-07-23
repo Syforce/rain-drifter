@@ -10,11 +10,26 @@ export class MediaRouter extends AbstractRouter {
             url: '/api/medias',
             callback: this.getMedias.bind(this)
         });
+
+        this.get({
+            url: '/api/medias/talent/:id',
+            callback: this.getMediasByTalentId.bind(this)
+        });
         
         this.post({
             url: '/api/media',
             callback: this.createMedia.bind(this)
         });
+
+        this.put({
+            url: '/api/medias',
+            callback: this.updateMedias.bind(this)
+        });
+    }
+
+    private getMediasByTalentId(request: Request) {
+        const id: string = request.params.id;
+        return this.mediaManager.getMediasByTalentId(id);
     }
 
     private getMedias(request: Request): Promise<Array<Media>> {
@@ -25,5 +40,10 @@ export class MediaRouter extends AbstractRouter {
         const body = request.body;
 
         return this.mediaManager.createMedia(body);
+    }
+
+    private updateMedias(request: Request): Promise<Array<Media>> {
+        const body = request.body;
+        return this.mediaManager.updateMedias(body);
     }
 }

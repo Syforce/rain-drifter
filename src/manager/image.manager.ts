@@ -24,6 +24,12 @@ export class ImageManager {
 		return this.imageDatastore.getAll();
 	}
 
+	public async getImageById(id: string): Promise<Image> {
+		
+		const image: Image = await this.imageDatastore.getById(id);
+		return image;
+	}
+
 	public async createImage(body: any): Promise<Image> {
 		// CLOUDINARY UPLOAD
 		const promise1 = this.gravityCloudService.upload(body.path);
@@ -63,12 +69,11 @@ export class ImageManager {
 		this.talentDatastore.getOneByOptionsAndUpdate(options, update);
 
 		return image;
-    }
-    
-    public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
+	}
+	
+	public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
 		const skip = (currentPage - 1) * itemsPerPage;
 		let sortOptions: any;
-		let data: any;
 
 		// TODO: SQL Injection Error
 		if (sortBy && sortOrder) {
@@ -77,10 +82,16 @@ export class ImageManager {
 			}
 		}
 
-		const list: Array<Talent> = await this.imageDatastore.getPaginated(skip, itemsPerPage, sortOptions);
-		const total: number = await this.imageDatastore.count({});
+		const options = {
+			skip: skip,
+			limit: itemsPerPage,
+			sort: sortOptions
+		}
 
-		data = {
+		const list: Array<Image> = await this.imageDatastore.getManyByOptions({}, options);
+		const total: number = await this.imageDatastore.count({});
+		
+		const data: any = {
 			list: list,
 			total: total
 		}

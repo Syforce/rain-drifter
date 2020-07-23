@@ -25,10 +25,17 @@ export class TalentRouter extends AbstractRouter {
             middleware: [this.rockGatherService.getMiddleware(['profileImage', 'profileCroppedImage', 'listingImage', 'listingCroppedImage'])]
         });
 
+        // This needs to be updated because of the conflict with the route below
         this.get({
-            url: '/api/talent/:title',
+            url: '/api/talent/:id',
             callback: this.getTalent.bind(this)
         })
+
+        this.put({
+            url: '/api/talent/:id',
+            callback: this.updateTalentById.bind(this)
+        })
+
     }
 
     private getTalents(request: Request): Promise<Array<Talent>> {
@@ -45,9 +52,8 @@ export class TalentRouter extends AbstractRouter {
     }
     
     private getTalent(request: Request): Promise<Talent> {
-        const title: string = request.params.title;
-
-        return this.talentManager.getTalent(title);
+        const id: string = request.params.id;
+        return this.talentManager.getTalent(id);
     }
 
     private createTalent(request: Request): Promise<Talent> {
@@ -63,4 +69,12 @@ export class TalentRouter extends AbstractRouter {
         
         return this.talentManager.createTalent(body);
     }
+
+    private updateTalentById(request: Request): Promise<Talent> {
+        const id: string = request.params.id;
+        const body = request.body;
+
+        return this.talentManager.updateTalentById(id, body);
+    }
+
 }
