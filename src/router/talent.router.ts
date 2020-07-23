@@ -30,6 +30,12 @@ export class TalentRouter extends AbstractRouter {
             url: '/api/talent/:id',
             callback: this.getTalent.bind(this)
         })
+
+        this.put({
+            url: '/api/talent/:id',
+            callback: this.updateTalentById.bind(this)
+        })
+
     }
 
     private getTalents(request: Request): Promise<Array<Talent>> {
@@ -63,4 +69,12 @@ export class TalentRouter extends AbstractRouter {
         
         return this.talentManager.createTalent(body);
     }
+
+    private updateTalentById(request: Request): Promise<Talent> {
+        const id: string = request.params.id;
+        const body = request.body;
+
+        return this.talentManager.updateTalentById(id, body);
+    }
+
 }

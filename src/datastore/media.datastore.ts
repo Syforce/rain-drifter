@@ -9,6 +9,7 @@ export class MediaDatastore extends AbstractDatastore<Media> {
 	}
 
 	public updateMedias(medias: Array<Media>) {
+		console.log(medias);
 		const promises: Array<Promise<Media>> = new Array<Promise<Media>>();
 
 		for (let i = 0; i < medias.length; i++) {
