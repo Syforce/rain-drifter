@@ -25,9 +25,7 @@ export class ImageManager {
 	}
 
 	public async getImageById(id: string): Promise<Image> {
-		
-		const image: Image = await this.imageDatastore.getById(id);
-		return image;
+		return this.imageDatastore.getById(id);
 	}
 
 	public async createImage(body: any): Promise<Image> {
