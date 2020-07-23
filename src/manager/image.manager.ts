@@ -24,6 +24,10 @@ export class ImageManager {
 		return this.imageDatastore.getAll();
 	}
 
+	public async getImageById(id: string): Promise<Image> {
+		return this.imageDatastore.getById(id);
+	}
+
 	public async createImage(body: any): Promise<Image> {
 		// CLOUDINARY UPLOAD
 		const promise1 = this.gravityCloudService.upload(body.path);

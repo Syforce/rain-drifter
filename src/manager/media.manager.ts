@@ -24,4 +24,8 @@ export class MediaManager {
 	public getMediasByTalentId(id: string) {
 		return this.mediaDatastore.getManyByOptions({talent : id});
 	}
+
+	public updateMedias(body): Promise<Array<Media>> {
+		return this.mediaDatastore.updateMedias(body);
+	}
 }

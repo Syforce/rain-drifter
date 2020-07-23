@@ -90,4 +90,10 @@ export class TalentManager {
 
 		return data;
 	}
+
+	public updateTalentById(id: string, talent: Talent) {
+		return this.talentDatastore.getOneByOptionsAndUpdate({
+			_id: id
+		}, talent);
+	}
 }

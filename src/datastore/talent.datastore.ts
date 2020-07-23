@@ -7,4 +7,6 @@ export class TalentDatastore extends AbstractDatastore<Talent> {
 	constructor() {
 		super('Talent', TalentSchema);
 	}
+
+	
 }
