@@ -1,6 +1,7 @@
 import { AbstractRouter, Request } from 'waterfall-gate';
 import { VideoManager } from '../manager/video.manager';
 import { Video } from '../model/video.model';
+import { ResponseData } from 'src/util/respone-data.model';
 
 export class VideoRouter extends AbstractRouter {
     private videoManager: VideoManager = new VideoManager();
@@ -17,8 +18,13 @@ export class VideoRouter extends AbstractRouter {
         });
     }
 
-    private getVideos(request: Request): Promise<Array<Video>> {
-        return this.videoManager.getVideos();
+    private getVideos(request: Request): Promise<ResponseData> {
+        const currentPage: number = +request.query.currentPage;
+        const itemsPerPage: number = +request.query.itemsPerPage;
+        const sortBy: string = request.query.sortBy as string;
+        const sortOrder: number = +request.query.sortOrder;
+
+        return this.videoManager.getVideos(currentPage, itemsPerPage, sortBy, sortOrder);
     }
     
     private createVideo(request: Request): Promise<Video> {
