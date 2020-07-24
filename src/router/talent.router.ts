@@ -25,16 +25,22 @@ export class TalentRouter extends AbstractRouter {
             middleware: [this.rockGatherService.getMiddleware(['profileImage', 'profileCroppedImage', 'listingImage', 'listingCroppedImage'])]
         });
 
+        this.post({
+            url: '/api/talent/:id',
+            callback: this.updateTalent.bind(this),
+            middleware: [this.rockGatherService.getMiddleware(['profileImage', 'profileCroppedImage', 'listingImage', 'listingCroppedImage'])]
+        });
+
         // This needs to be updated because of the conflict with the route below
         this.get({
             url: '/api/talent/:id',
             callback: this.getTalent.bind(this)
         })
 
-        this.put({
-            url: '/api/talent/:id',
-            callback: this.updateTalentById.bind(this)
-        })
+        // this.put({
+        //     url: '/api/talent/:id',
+        //     callback: this.updateTalentById.bind(this)
+        // })
 
     }
 
@@ -68,6 +74,28 @@ export class TalentRouter extends AbstractRouter {
         body.profileCroppedImage = profileCroppedImage;
         
         return this.talentManager.createTalent(body);
+    }
+
+    private updateTalent(request: Request): Promise<Talent> {
+        console.log("am ajuns la server");
+        
+        let body: any = JSON.parse(JSON.stringify(request.body));
+        body.medias = JSON.parse(body.medias);
+        // body.medias.forEach(element => {
+        //     element = JSON.parse(element);
+        // });
+        console.log('body', body);
+
+        const listingImage = (request as any).files.listingImage[0].path;
+        const listingCroppedImage = (request as any).files.listingCroppedImage[0].path;
+        const profileImage = (request as any).files.profileImage[0].path;
+        const profileCroppedImage = (request as any).files.profileCroppedImage[0].path;
+        body.listingImage = listingImage;
+        body.profileImage = profileImage;
+        body.listingCroppedImage = listingCroppedImage;
+        body.profileCroppedImage = profileCroppedImage;
+        
+        return this.talentManager.updateTalent(body);
     }
 
     private updateTalentById(request: Request): Promise<Talent> {
