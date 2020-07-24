@@ -2,6 +2,7 @@ import { AbstractRouter, Request } from 'waterfall-gate';
 import { ImageManager } from '../manager/image.manager';
 import { Image } from '../model/image.model';
 import { RockGatherService } from 'rock-gather';
+import { ResponseData } from 'src/util/respone-data.model';
 
 export class ImageRouter extends AbstractRouter {
     private imageManager: ImageManager = new ImageManager();
@@ -31,17 +32,13 @@ export class ImageRouter extends AbstractRouter {
         });
     }
 
-    private getImages(request: Request): Promise<Array<Image>> {
+    private getImages(request: Request): Promise<ResponseData> {
         const currentPage: number = +request.query.currentPage;
         const itemsPerPage: number = +request.query.itemsPerPage;
         const sortBy: string = request.query.sortBy as string;
         const sortOrder: number = +request.query.sortOrder;
 
-        if (currentPage && itemsPerPage) {
-            return this.imageManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
-        } else {
-            return this.imageManager.getImages();
-        }
+        return this.imageManager.getImages(currentPage, itemsPerPage, sortBy, sortOrder);
     }
 
     private getImageById(request: Request): Promise<Image> {

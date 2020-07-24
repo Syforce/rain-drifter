@@ -7,6 +7,7 @@ import { MediaDatastore } from '../datastore/media.datastore';
 import { unlink } from 'fs';
 import { Talent } from '../model/talent.model';
 import { Media } from '../model/media.model';
+import { ResponseData } from 'src/util/respone-data.model';
 
 export class TalentManager {
 	private iceContainerService: IceContainerService;
@@ -21,8 +22,35 @@ export class TalentManager {
 		this.mediaDatastore = this.iceContainerService.getDatastore(MediaDatastore.name) as MediaDatastore;
 	}
 
-	public getTalents(): Promise<Array<Talent>> {
-		return this.talentDatastore.getAll();
+	public async getTalents(currentPage: number, itemsPerPage: number, sortBy: string, sortOrder: number): Promise<ResponseData> {
+		let options: any = {};
+
+		if (currentPage && itemsPerPage) {
+			const skip = (currentPage - 1) * itemsPerPage;
+			const limit = itemsPerPage;
+
+			options.skip = skip;
+			options.limit = limit;
+
+			if (sortBy && sortOrder) {
+				let sortOptions: any;
+
+				sortOptions = {
+					[sortBy]: sortOrder
+				}
+
+				options.sort = sortOptions;
+			}
+		}
+
+		const list: Array<Talent> = await this.talentDatastore.getManyByOptions({}, options);
+		const total: number = await this.talentDatastore.count();
+		const data: ResponseData = {
+			list: list,
+			total: total
+		}
+
+		return data;
 	}
 
 	public async getTalent(id: string): Promise<Talent> {
@@ -61,34 +89,6 @@ export class TalentManager {
 		body.profileCroppedImage = values[3];
 
 		return this.talentDatastore.create(body);
-	}
-
-	public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
-		const skip = (currentPage - 1) * itemsPerPage;
-		let sortOptions: any;
-
-		// TODO: SQL Injection Error
-		if (sortBy && sortOrder) {
-			sortOptions = {
-				[sortBy]: sortOrder
-			}
-		}
-
-		const options = {
-			skip: skip,
-			limit: itemsPerPage,
-			sort: sortOptions
-		}
-
-		const list: Array<Talent> = await this.talentDatastore.getManyByOptions({}, options);
-		const total: number = await this.talentDatastore.count({});
-		
-		const data: any = {
-			list: list,
-			total: total
-		}
-
-		return data;
 	}
 
 	public updateTalentById(id: string, talent: Talent) {
