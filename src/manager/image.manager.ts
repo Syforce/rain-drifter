@@ -5,6 +5,7 @@ import { GravityCloudService } from 'gravity-cloud';
 import { unlink } from 'fs';
 import { TalentDatastore } from '../datastore/talent.datastore';
 import { Talent } from '../model/talent.model';
+import { ResponseData } from 'src/util/respone-data.model';
 
 export class ImageManager {
 	private iceContainerService: IceContainerService;
@@ -20,8 +21,35 @@ export class ImageManager {
 		this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
 	}
 
-	public getImages(): Promise<Array<Image>> {
-		return this.imageDatastore.getAll();
+	public async getImages(currentPage: number, itemsPerPage: number, sortBy: string, sortOrder: number): Promise<ResponseData> {
+		let options: any = {};
+
+		if (currentPage && itemsPerPage) {
+			const skip = (currentPage - 1) * itemsPerPage;
+			const limit = itemsPerPage;
+
+			options.skip = skip;
+			options.limit = limit;
+
+			if (sortBy && sortOrder) {
+				let sortOptions: any;
+
+				sortOptions = {
+					[sortBy]: sortOrder
+				}
+
+				options.sort = sortOptions;
+			}
+		}
+
+		const list: Array<Image> = await this.imageDatastore.getManyByOptions({}, options);
+		const total: number = await this.imageDatastore.count();
+		const data: ResponseData = {
+			list: list,
+			total: total
+		}
+
+		return data;
 	}
 
 	public async getImageById(id: string): Promise<Image> {
@@ -67,33 +95,5 @@ export class ImageManager {
 		this.talentDatastore.getOneByOptionsAndUpdate(options, update);
 
 		return image;
-	}
-	
-	public async getPaginated(currentPage: number, itemsPerPage: number, sortBy?: string, sortOrder?: number): Promise<any> {
-		const skip = (currentPage - 1) * itemsPerPage;
-		let sortOptions: any;
-
-		// TODO: SQL Injection Error
-		if (sortBy && sortOrder) {
-			sortOptions = {
-				[sortBy]: sortOrder
-			}
-		}
-
-		const options = {
-			skip: skip,
-			limit: itemsPerPage,
-			sort: sortOptions
-		}
-
-		const list: Array<Image> = await this.imageDatastore.getManyByOptions({}, options);
-		const total: number = await this.imageDatastore.count({});
-		
-		const data: any = {
-			list: list,
-			total: total
-		}
-
-		return data;
 	}
 }

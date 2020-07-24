@@ -2,6 +2,7 @@ import { AbstractRouter, Request } from 'waterfall-gate';
 import { TalentManager } from '../manager/talent.manager';
 import { Talent } from '../model/talent.model';
 import { RockGatherService } from 'rock-gather';
+import { ResponseData } from 'src/util/respone-data.model';
 
 export class TalentRouter extends AbstractRouter {
     private talentManager: TalentManager = new TalentManager();
@@ -44,17 +45,13 @@ export class TalentRouter extends AbstractRouter {
 
     }
 
-    private getTalents(request: Request): Promise<Array<Talent>> {
+    private getTalents(request: Request): Promise<ResponseData> {
         const currentPage: number = +request.query.currentPage;
         const itemsPerPage: number = +request.query.itemsPerPage;
         const sortBy: string = request.query.sortBy as string;
         const sortOrder: number = +request.query.sortOrder;
 
-        if (currentPage && itemsPerPage) {
-            return this.talentManager.getPaginated(currentPage, itemsPerPage, sortBy, sortOrder);
-        } else {
-            return this.talentManager.getTalents();
-        }
+        return this.talentManager.getTalents(currentPage, itemsPerPage, sortBy, sortOrder);
     }
     
     private getTalent(request: Request): Promise<Talent> {
