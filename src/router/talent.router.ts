@@ -38,10 +38,10 @@ export class TalentRouter extends AbstractRouter {
             callback: this.getTalent.bind(this)
         })
 
-        // this.put({
-        //     url: '/api/talent/:id',
-        //     callback: this.updateTalentById.bind(this)
-        // })
+        this.put({
+            url: '/api/talent/:id',
+            callback: this.updateTalentById.bind(this)
+        })
 
     }
 
@@ -74,14 +74,8 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private updateTalent(request: Request): Promise<Talent> {
-        console.log("am ajuns la server");
-        
         let body: any = JSON.parse(JSON.stringify(request.body));
         body.medias = JSON.parse(body.medias);
-        // body.medias.forEach(element => {
-        //     element = JSON.parse(element);
-        // });
-        console.log('body', body);
 
         const listingImage = (request as any).files.listingImage[0].path;
         const listingCroppedImage = (request as any).files.listingCroppedImage[0].path;
