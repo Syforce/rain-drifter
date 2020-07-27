@@ -64,13 +64,11 @@ export class TalentManager {
 		return talent;
 	}
 
-	public deleteTempFiles(files: Array<string>) {
-		files.forEach( (file) => {
-			unlink(file, (err) => {
-				if (err) {
-					console.log(err);
-				}
-			});
+	public deleteTempFiles(file) {
+		unlink(file, (err) => {
+			if (err) {
+				console.log(err);
+			}
 		});
 	}
 
@@ -91,24 +89,43 @@ export class TalentManager {
 		return this.talentDatastore.create(body);
 	}
 
+	
 	public async updateTalent(body: any): Promise<Talent> {
-		const promise1 = this.gravityCloudService.upload(body.listingImage);
-		const promise2 = this.gravityCloudService.upload(body.listingCroppedImage);
-		const promise3 = this.gravityCloudService.upload(body.profileImage);
-		const promise4 = this.gravityCloudService.upload(body.profileCroppedImage);
-		const values: Array<string> = await Promise.all([promise1, promise2, promise3, promise4]);
 
-		this.deleteTempFiles([body.listingImage, body.listingCroppedImage, body.profileImage, body.profileCroppedImage]);	
+		if ( !body.listingImage.includes("http://res.cloudinary.com") ) {
+			const promise = this.gravityCloudService.upload(body.listingImage);
+			const resolvedPromise: Array<string> = await Promise.all([promise]);
+			this.deleteTempFiles(body.listingImage);
+			body.listingImage = resolvedPromise[0];
+		}
+
+		if ( !body.profileImage.includes("http://res.cloudinary.com") ) {
+			const promise = this.gravityCloudService.upload(body.profileImage);
+			const resolvedPromise: Array<string> = await Promise.all([promise]);
+			this.deleteTempFiles(body.profileImage);
+			body.profileImage = resolvedPromise[0];
+		}
+
 		
-		body.listingImage = values[0];
-		body.listingCroppedImage = values[1];
-		body.profileImage = values[2];
-		body.profileCroppedImage = values[3];
+		if ( !body.profileCroppedImage.includes("http://res.cloudinary.com") ) {
+			const promise = this.gravityCloudService.upload(body.profileCroppedImage);
+			const resolvedPromise: Array<string> = await Promise.all([promise]);
+			this.deleteTempFiles(body.profileCroppedImage);
+			body.profileCroppedImage = resolvedPromise[0];
+		}
 
+		if ( !body.listingCroppedImage.includes("http://res.cloudinary.com") ) {
+			const promise = this.gravityCloudService.upload(body.listingCroppedImage);
+			const resolvedPromise: Array<string> = await Promise.all([promise]);
+			this.deleteTempFiles(body.listingCroppedImage);
+			body.listingCroppedImage = resolvedPromise[0];
+		}
+		
 		return this.talentDatastore.getOneByOptionsAndUpdate({
 			_id: body._id
 		}, body);
 	}
+
 
 	public updateTalentById(id: string, talent: Talent) {
 		return this.talentDatastore.getOneByOptionsAndUpdate({
