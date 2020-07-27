@@ -16,6 +16,11 @@ export class VideoRouter extends AbstractRouter {
             url: '/api/video',
             callback: this.createVideo.bind(this)
         });
+
+        this.get({
+            url: '/api/video/:id',
+            callback: this.getVideo.bind(this)
+        });
     }
 
     private getVideos(request: Request): Promise<ResponseData> {
@@ -25,6 +30,12 @@ export class VideoRouter extends AbstractRouter {
         const sortOrder: number = +request.query.sortOrder;
 
         return this.videoManager.getVideos(currentPage, itemsPerPage, sortBy, sortOrder);
+    }
+
+    private getVideo(request: Request): Promise<Video> {
+        const id: string = request.params.id;
+
+        return this.videoManager.getVideo(id);
     }
     
     private createVideo(request: Request): Promise<Video> {

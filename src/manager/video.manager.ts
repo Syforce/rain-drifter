@@ -65,4 +65,8 @@ export class VideoManager {
 
         return video;
     }
+
+    public getVideo(id: string): Promise<Video> {
+        return this.videoDatastore.getById(id);
+    }
 }
