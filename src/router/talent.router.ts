@@ -77,11 +77,35 @@ export class TalentRouter extends AbstractRouter {
         let body: any = JSON.parse(JSON.stringify(request.body));
         body.medias = JSON.parse(body.medias);
 
-        const listingImage = (request as any).files.listingImage[0].path;
-        const listingCroppedImage = (request as any).files.listingCroppedImage[0].path;
-        const profileImage = (request as any).files.profileImage[0].path;
-        const profileCroppedImage = (request as any).files.profileCroppedImage[0].path;
-        body.listingImage = listingImage;
+        let listingImage: any;
+        if ((request as any).files.listingImage ) {
+           listingImage = (request as any).files.listingImage[0].path;
+        } else {
+            listingImage = request.body.listingImageURL;
+        }
+
+        let listingCroppedImage: any;
+        if ((request as any).files.listingCroppedImage) {
+            listingCroppedImage = (request as any).files.listingCroppedImage[0].path;
+        } else {
+            listingCroppedImage = request.body.listingCroppedURL;
+        }
+
+        let profileImage: any;
+        if ((request as any).files.profileImage ) {
+            profileImage = (request as any).files.profileImage[0].path;
+        } else {
+            profileImage = request.body.profileImageURL;
+        }
+        
+        let profileCroppedImage: any;
+        if ((request as any).files.profileCroppedImage) {
+            profileCroppedImage = (request as any).files.profileCroppedImage[0].path;
+        } else {
+            profileCroppedImage = request.body.profileCroppedURL;
+        }
+
+        body.listingImage = listingImage;        
         body.profileImage = profileImage;
         body.listingCroppedImage = listingCroppedImage;
         body.profileCroppedImage = profileCroppedImage;
