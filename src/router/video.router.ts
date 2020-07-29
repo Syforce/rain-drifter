@@ -2,9 +2,17 @@ import { AbstractRouter, Request } from 'waterfall-gate';
 import { VideoManager } from '../manager/video.manager';
 import { Video } from '../model/video.model';
 import { ResponseData } from 'src/util/respone-data.model';
+import { RockGatherService } from 'rock-gather';
 
 export class VideoRouter extends AbstractRouter {
     private videoManager: VideoManager = new VideoManager();
+    private rockGatherService: RockGatherService;
+
+    constructor(routeMap) {
+        super(routeMap);
+
+        this.rockGatherService = RockGatherService.getInstance();
+    }
 
     public initRoutes() {
         this.get({
@@ -15,6 +23,12 @@ export class VideoRouter extends AbstractRouter {
         this.post({
             url: '/api/video',
             callback: this.createVideo.bind(this)
+        });
+
+        this.post({
+            url: '/api/video/:id',
+            callback: this.updateVideo.bind(this),
+            middleware: [this.rockGatherService.getMiddleware([])]
         });
 
         this.get({
@@ -42,6 +56,21 @@ export class VideoRouter extends AbstractRouter {
         const body = request.body;
 
         return this.videoManager.createVideo(body);
+    }
+
+    private updateVideo(request: Request): Promise<Video> {
+        const body = request.body;
+
+        // wip
+        let thumbnailImage: any;
+        if ((request as any).files.thumbnailImage ) {
+            thumbnailImage = (request as any).files.thumbnailImage[0].path;
+        } else {
+            thumbnailImage = request.body.selectedThumbnail;
+        }
+        body.selectedThumbnail = thumbnailImage;
+
+        return this.videoManager.updateVideo(body);
     }
 }
 

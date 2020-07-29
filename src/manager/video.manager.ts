@@ -4,17 +4,22 @@ import { TalentDatastore } from '../datastore/talent.datastore'
 import { Video } from '../model/video.model';
 import { Talent } from 'src/model/talent.model';
 import { ResponseData } from 'src/util/respone-data.model';
+import { GravityCloudService } from 'gravity-cloud';
+import { unlink } from 'fs';
+
 
 
 export class VideoManager {
     private iceContainerService: IceContainerService;
     private videoDatastore: VideoDatastore;
     private talentDatastore: TalentDatastore;
+    private gravityCloudService: GravityCloudService;
 
     constructor() {
         this.iceContainerService = IceContainerService.getInstance();
         this.videoDatastore = this.iceContainerService.getDatastore(VideoDatastore.name) as VideoDatastore;
         this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
+        this.gravityCloudService = GravityCloudService.getInstance();
     }
 
     public async getVideos(currentPage: number, itemsPerPage: number, sortBy: string, sortOrder: number): Promise<ResponseData> {
@@ -65,6 +70,30 @@ export class VideoManager {
 
         return video;
     }
+
+    public async updateVideo(body): Promise<Video> {
+
+        // wip
+        // if ( !body.thumbnailImage.includes("http://res.cloudinary.com") ) {
+		// 	const promise = this.gravityCloudService.upload(body.listingImage);
+		// 	const resolvedPromise: Array<string> = await Promise.all([promise]);
+		// 	this.deleteTempFiles(body.listingImage);
+		// 	body.listingImage = resolvedPromise[0];
+        // }
+        
+        return this.videoDatastore.getOneByOptionsAndUpdate({
+			_id: body._id
+		}, body);
+    }
+
+    
+	public deleteTempFiles(file) {
+		unlink(file, (err) => {
+			if (err) {
+				console.log(err);
+			}
+		});
+	}
 
     public getVideo(id: string): Promise<Video> {
         return this.videoDatastore.getById(id);
