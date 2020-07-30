@@ -64,14 +64,22 @@ export class TalentManager {
 		return talent;
 	}
 
-	public deleteTempFiles(files) {
-		files.forEach(file => {
-			unlink(file, (err) => {
+	public deleteTempFiles(data: string | Array<string>) {
+		if (Array.isArray(data)) {
+			data.forEach(file => {
+				unlink(file, (err) => {
+					if (err) {
+						console.log(err);
+					}
+				});
+			});
+		} else {
+			unlink(data, (err) => {
 				if (err) {
 					console.log(err);
 				}
 			});
-		});
+		}
 	}
 
 	public async createTalent(body: any): Promise<Talent> {
@@ -88,7 +96,6 @@ export class TalentManager {
 		body.profileImage = values[2];
 		body.profileCroppedImage = values[3];
 
-		console.log(body);
 		return this.talentDatastore.create(body);
 	}
 

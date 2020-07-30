@@ -60,8 +60,6 @@ export class TalentRouter extends AbstractRouter {
     }
 
     private createTalent(request: Request): Promise<Talent> {
-        console.log((request as any).files.profileImage);
-        console.log((request as any).files.profileCroppedImage);
         let body: any = JSON.parse(JSON.stringify(request.body));
         const listingImage = (request as any).files.listingImage[0].path;
         const listingCroppedImage = (request as any).files.listingCroppedImage[0].path;
