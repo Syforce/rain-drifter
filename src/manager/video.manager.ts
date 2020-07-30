@@ -1,6 +1,7 @@
 import { IceContainerService } from 'ice-container';
 import { VideoDatastore } from '../datastore/video.datastore';
 import { TalentDatastore } from '../datastore/talent.datastore'
+import { MediaDatastore } from '../datastore/media.datastore';
 import { Video } from '../model/video.model';
 import { Talent } from 'src/model/talent.model';
 import { ResponseData } from 'src/util/respone-data.model';
@@ -10,11 +11,13 @@ export class VideoManager {
     private iceContainerService: IceContainerService;
     private videoDatastore: VideoDatastore;
     private talentDatastore: TalentDatastore;
+    private mediaDatastore: MediaDatastore;
 
     constructor() {
         this.iceContainerService = IceContainerService.getInstance();
         this.videoDatastore = this.iceContainerService.getDatastore(VideoDatastore.name) as VideoDatastore;
         this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
+        this.mediaDatastore = this.iceContainerService.getDatastore(MediaDatastore.name) as MediaDatastore;
     }
 
     public async getVideos(currentPage: number, itemsPerPage: number, sortBy: string, sortOrder: number): Promise<ResponseData> {
@@ -71,13 +74,12 @@ export class VideoManager {
     }
 
     public async updateVideo(id: string, item: Video): Promise<Video> {
-        const video = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: id }, item);
-        const oldTalent = await this.talentDatastore.getOneByOptions({ medias: id });
-        const newTalent = await this.talentDatastore.getById(video.talent);
+        const oldVideo = await this.mediaDatastore.getById(id);
+        const newVideo = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: id }, item);
 
-        this.talentDatastore.removeMediaById({ _id: oldTalent._id }, id);
-        this.talentDatastore.addMediaToTalent({ _id: newTalent._id }, video);
+        this.talentDatastore.removeMediaById({ _id: oldVideo.talent }, id);
+        this.talentDatastore.addMediaToTalent({ _id: newVideo.talent }, newVideo);
 
-        return video;
+        return newVideo;
     }
 }
