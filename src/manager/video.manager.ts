@@ -7,8 +7,6 @@ import { ResponseData } from 'src/util/respone-data.model';
 import { GravityCloudService } from 'gravity-cloud';
 import { unlink } from 'fs';
 
-
-
 export class VideoManager {
     private iceContainerService: IceContainerService;
     private videoDatastore: VideoDatastore;
@@ -74,25 +72,24 @@ export class VideoManager {
     public async updateVideo(body): Promise<Video> {
 
         if ( !body.selectedThumbnail.includes("http://res.cloudinary.com") ) {
-			const promise = this.gravityCloudService.upload(body.selectedThumbnail);
-			const resolvedPromise: Array<string> = await Promise.all([promise]);
-			this.deleteTempFiles(body.selectedThumbnail);
+            const promise = this.gravityCloudService.upload(body.selectedThumbnail);
+            const resolvedPromise: Array<string> = await Promise.all([promise]);
+            this.deleteTempFiles(body.selectedThumbnail);
             body.selectedThumbnail = resolvedPromise[0];
         }
         
         return this.videoDatastore.getOneByOptionsAndUpdate({
-			_id: body._id
-		}, body);
+            _id: body._id
+        }, body);
     }
 
-    
-	public deleteTempFiles(file) {
-		unlink(file, (err) => {
-			if (err) {
-				console.log(err);
-			}
-		});
-	}
+    public deleteTempFiles(file) {
+        unlink(file, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
+    }
 
     public getVideo(id: string): Promise<Video> {
         return this.videoDatastore.getById(id);
