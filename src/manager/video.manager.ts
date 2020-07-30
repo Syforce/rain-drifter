@@ -80,6 +80,8 @@ export class VideoManager {
 			this.deleteTempFiles(body.selectedThumbnail);
             body.selectedThumbnail = resolvedPromise[0];
         }
+
+        console.log("my body: ", body);
         
         return this.videoDatastore.getOneByOptionsAndUpdate({
 			_id: body._id

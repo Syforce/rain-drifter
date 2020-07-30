@@ -62,6 +62,8 @@ export class VideoRouter extends AbstractRouter {
     private updateVideo(request: Request): Promise<Video> {
         let body: any = JSON.parse(JSON.stringify(request.body));
 
+        console.log(body);
+
         let thumbnailImage: any;
         if ((request as any).files.thumbnailImageFile ) {
             thumbnailImage = (request as any).files.thumbnailImageFile[0].path;
