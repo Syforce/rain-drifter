@@ -28,7 +28,7 @@ export class VideoRouter extends AbstractRouter {
         this.post({
             url: '/api/video/:id',
             callback: this.updateVideo.bind(this),
-            middleware: [this.rockGatherService.getMiddleware([])]
+            middleware: [this.rockGatherService.getMiddleware(['thumbnailImageFile'])]
         });
 
         this.get({
@@ -59,16 +59,17 @@ export class VideoRouter extends AbstractRouter {
     }
 
     private updateVideo(request: Request): Promise<Video> {
-        const body = request.body;
+        let body: any = JSON.parse(JSON.stringify(request.body));
 
-        // wip
         let thumbnailImage: any;
-        if ((request as any).files.thumbnailImage ) {
-            thumbnailImage = (request as any).files.thumbnailImage[0].path;
+        if ((request as any).files.thumbnailImageFile ) {
+            console.log('aiciiii');
+            thumbnailImage = (request as any).files.thumbnailImageFile[0].path;
         } else {
             thumbnailImage = request.body.selectedThumbnail;
         }
         body.selectedThumbnail = thumbnailImage;
+        console.log(body.selectedThumbnail);
 
         return this.videoManager.updateVideo(body);
     }

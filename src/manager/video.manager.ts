@@ -73,13 +73,13 @@ export class VideoManager {
 
     public async updateVideo(body): Promise<Video> {
 
-        // wip
-        // if ( !body.thumbnailImage.includes("http://res.cloudinary.com") ) {
-		// 	const promise = this.gravityCloudService.upload(body.listingImage);
-		// 	const resolvedPromise: Array<string> = await Promise.all([promise]);
-		// 	this.deleteTempFiles(body.listingImage);
-		// 	body.listingImage = resolvedPromise[0];
-        // }
+        if ( !body.selectedThumbnail.includes("http://res.cloudinary.com") ) {
+            console.log('am ajuns aici');
+			const promise = this.gravityCloudService.upload(body.selectedThumbnail);
+			const resolvedPromise: Array<string> = await Promise.all([promise]);
+			this.deleteTempFiles(body.selectedThumbnail);
+            body.selectedThumbnail = resolvedPromise[0];
+        }
         
         return this.videoDatastore.getOneByOptionsAndUpdate({
 			_id: body._id
