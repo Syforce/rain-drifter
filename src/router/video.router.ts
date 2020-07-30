@@ -53,7 +53,8 @@ export class VideoRouter extends AbstractRouter {
     }
     
     private createVideo(request: Request): Promise<Video> {
-        const body = request.body;
+        let body: any = JSON.parse(JSON.stringify(request.body));
+        console.log(body);
 
         return this.videoManager.createVideo(body);
     }
@@ -63,13 +64,11 @@ export class VideoRouter extends AbstractRouter {
 
         let thumbnailImage: any;
         if ((request as any).files.thumbnailImageFile ) {
-            console.log('aiciiii');
             thumbnailImage = (request as any).files.thumbnailImageFile[0].path;
         } else {
             thumbnailImage = request.body.selectedThumbnail;
         }
         body.selectedThumbnail = thumbnailImage;
-        console.log(body.selectedThumbnail);
 
         return this.videoManager.updateVideo(body);
     }
