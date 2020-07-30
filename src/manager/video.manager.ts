@@ -69,4 +69,15 @@ export class VideoManager {
     public getVideo(id: string): Promise<Video> {
         return this.videoDatastore.getById(id);
     }
+
+    public async updateVideo(id: string, item: Video): Promise<Video> {
+        const video = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: id }, item);
+        const oldTalent = await this.talentDatastore.getOneByOptions({ medias: id });
+        const newTalent = await this.talentDatastore.getById(video.talent);
+
+        this.talentDatastore.removeMediaById({ _id: oldTalent._id }, id);
+        this.talentDatastore.addMediaToTalent({ _id: newTalent._id }, video);
+
+        return video;
+    }
 }

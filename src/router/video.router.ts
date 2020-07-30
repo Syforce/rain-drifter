@@ -21,6 +21,11 @@ export class VideoRouter extends AbstractRouter {
             url: '/api/video/:id',
             callback: this.getVideo.bind(this)
         });
+
+        this.put({
+            url: '/api/video/:id',
+            callback: this.updateVideo.bind(this)
+        });
     }
 
     private getVideos(request: Request): Promise<ResponseData> {
@@ -42,6 +47,13 @@ export class VideoRouter extends AbstractRouter {
         const body = request.body;
 
         return this.videoManager.createVideo(body);
+    }
+
+    private updateVideo(request: Request): Promise<Video> {
+        const id: string = request.params.id;
+        const item: Video = request.body;
+        
+        return this.videoManager.updateVideo(id, item);
     }
 }
 

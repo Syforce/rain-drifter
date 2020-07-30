@@ -64,11 +64,13 @@ export class TalentManager {
 		return talent;
 	}
 
-	public deleteTempFiles(file) {
-		unlink(file, (err) => {
-			if (err) {
-				console.log(err);
-			}
+	public deleteTempFiles(files) {
+		files.forEach(file => {
+			unlink(file, (err) => {
+				if (err) {
+					console.log(err);
+				}
+			});
 		});
 	}
 
@@ -86,6 +88,7 @@ export class TalentManager {
 		body.profileImage = values[2];
 		body.profileCroppedImage = values[3];
 
+		console.log(body);
 		return this.talentDatastore.create(body);
 	}
 
