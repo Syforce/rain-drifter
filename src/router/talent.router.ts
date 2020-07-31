@@ -32,7 +32,6 @@ export class TalentRouter extends AbstractRouter {
             middleware: [this.rockGatherService.getMiddleware(['profileImage', 'profileCroppedImage', 'listingImage', 'listingCroppedImage'])]
         });
 
-        // This needs to be updated because of the conflict with the route below
         this.get({
             url: '/api/talent/:id',
             callback: this.getTalent.bind(this)

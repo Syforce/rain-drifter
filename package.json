@@ -10,7 +10,7 @@
         "gravity-cloud": "0.0.1",
         "ice-container": "^0.1.3",
         "pug": "^2.0.4",
-        "rock-gather": "0.0.6",
+        "rock-gather": "0.0.14",
         "waterfall-gate": "0.0.17"
     },
     "devDependencies": {
