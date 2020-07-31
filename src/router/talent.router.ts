@@ -1,4 +1,4 @@
-import { AbstractRouter, Request } from 'waterfall-gate';
+import { AbstractRouter, Request, WaterfallGateService } from 'waterfall-gate';
 import { TalentManager } from '../manager/talent.manager';
 import { Talent } from '../model/talent.model';
 import { RockGatherService } from 'rock-gather';
@@ -32,7 +32,6 @@ export class TalentRouter extends AbstractRouter {
             middleware: [this.rockGatherService.getMiddleware(['profileImage', 'profileCroppedImage', 'listingImage', 'listingCroppedImage'])]
         });
 
-        // This needs to be updated because of the conflict with the route below
         this.get({
             url: '/api/talent/:id',
             callback: this.getTalent.bind(this)
@@ -69,7 +68,9 @@ export class TalentRouter extends AbstractRouter {
         body.profileImage = profileImage;
         body.listingCroppedImage = listingCroppedImage;
         body.profileCroppedImage = profileCroppedImage;
-        
+        body.listingCropperConfig = JSON.parse(body.listingCropperConfig);
+        body.profileCropperConfig = JSON.parse(body.profileCropperConfig);
+
         return this.talentManager.createTalent(body);
     }
 

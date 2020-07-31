@@ -1,22 +1,27 @@
 import { IceContainerService } from 'ice-container';
 import { VideoDatastore } from '../datastore/video.datastore';
 import { TalentDatastore } from '../datastore/talent.datastore'
+import { MediaDatastore } from '../datastore/media.datastore';
+import { RockGatherService } from 'rock-gather';
 import { Video } from '../model/video.model';
 import { Talent } from 'src/model/talent.model';
 import { ResponseData } from 'src/util/respone-data.model';
 import { GravityCloudService } from 'gravity-cloud';
-import { unlink } from 'fs';
 
 export class VideoManager {
     private iceContainerService: IceContainerService;
     private videoDatastore: VideoDatastore;
     private talentDatastore: TalentDatastore;
+    private mediaDatastore: MediaDatastore;
     private gravityCloudService: GravityCloudService;
+    private rockGatherService: RockGatherService;
 
     constructor() {
         this.iceContainerService = IceContainerService.getInstance();
+        this.rockGatherService = RockGatherService.getInstance();
         this.videoDatastore = this.iceContainerService.getDatastore(VideoDatastore.name) as VideoDatastore;
         this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
+        this.mediaDatastore = this.iceContainerService.getDatastore(MediaDatastore.name) as MediaDatastore;
         this.gravityCloudService = GravityCloudService.getInstance();
     }
 
@@ -69,29 +74,28 @@ export class VideoManager {
         return video;
     }
 
-    public async updateVideo(body): Promise<Video> {
-
-        if ( !body.selectedThumbnail.includes("http://res.cloudinary.com") ) {
-            const promise = this.gravityCloudService.upload(body.selectedThumbnail);
-            const resolvedPromise: Array<string> = await Promise.all([promise]);
-            this.deleteTempFiles(body.selectedThumbnail);
-            body.selectedThumbnail = resolvedPromise[0];
-        }
-        
-        return this.videoDatastore.getOneByOptionsAndUpdate({
-            _id: body._id
-        }, body);
-    }
-
-    public deleteTempFiles(file) {
-        unlink(file, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
-    }
-
     public getVideo(id: string): Promise<Video> {
         return this.videoDatastore.getById(id);
+    }
+
+    public async updateVideo(item: Video): Promise<Video> {
+        const oldVideo = await this.mediaDatastore.getById(item._id);
+
+        if ( !item.selectedThumbnail.includes("http://res.cloudinary.com") ) {
+            const promise = this.gravityCloudService.upload(item.selectedThumbnail);
+            const resolvedPromise: Array<string> = await Promise.all([promise]);
+            this.rockGatherService.removeFile(item.selectedThumbnail);
+            item.selectedThumbnail = resolvedPromise[0];
+        }
+
+        const newVideo = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: item._id }, item);
+
+        if (oldVideo.talent !== item.talent) {
+            const updateOldTalentPromise = this.talentDatastore.removeMediaById({ _id: oldVideo.talent }, item._id);
+            const updtateNewTalentPromise = this.talentDatastore.addMediaToTalent({ _id: newVideo.talent }, newVideo);
+            await Promise.all([updateOldTalentPromise, updtateNewTalentPromise]);
+        }
+
+        return newVideo;
     }
 }
