@@ -72,12 +72,22 @@ export class VideoManager {
         return video;
     }
 
-    public deleteTempFiles(file) {
-        unlink(file, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
+    public deleteTempFiles(data: string | Array<string>) {
+        if (Array.isArray(data)) {
+            data.forEach(file => {
+                unlink(file, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
+            });
+        } else {
+            unlink(data, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
+        }
     }
 
     public getVideo(id: string): Promise<Video> {
