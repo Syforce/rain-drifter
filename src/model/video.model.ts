@@ -14,5 +14,5 @@ export interface Video extends Media {
     preview: string;
     original: string;
     thumbnails: [string];
-    selectedThumbnail: String;
+    selectedThumbnail: string;
 }
