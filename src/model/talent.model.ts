@@ -17,14 +17,14 @@ export const TalentSchema: Schema = new Schema({
 	profileCroppedImage: String,
 	listingCropperConfig: {
 		x1: Number,
-		x2: Number,
 		y1: Number,
+		x2: Number,
 		y2: Number
 	},
 	profileCropperConfig: {
 		x1: Number,
-		x2: Number,
 		y1: Number,
+		x2: Number,
 		y2: Number
 	},
 	medias: [{
