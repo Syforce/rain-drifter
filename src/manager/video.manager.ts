@@ -5,19 +5,22 @@ import { MediaDatastore } from '../datastore/media.datastore';
 import { Video } from '../model/video.model';
 import { Talent } from 'src/model/talent.model';
 import { ResponseData } from 'src/util/respone-data.model';
-
+import { GravityCloudService } from 'gravity-cloud';
+import { unlink } from 'fs';
 
 export class VideoManager {
     private iceContainerService: IceContainerService;
     private videoDatastore: VideoDatastore;
     private talentDatastore: TalentDatastore;
     private mediaDatastore: MediaDatastore;
+    private gravityCloudService: GravityCloudService;
 
     constructor() {
         this.iceContainerService = IceContainerService.getInstance();
         this.videoDatastore = this.iceContainerService.getDatastore(VideoDatastore.name) as VideoDatastore;
         this.talentDatastore = this.iceContainerService.getDatastore(TalentDatastore.name) as TalentDatastore;
         this.mediaDatastore = this.iceContainerService.getDatastore(MediaDatastore.name) as MediaDatastore;
+        this.gravityCloudService = GravityCloudService.getInstance();
     }
 
     public async getVideos(currentPage: number, itemsPerPage: number, sortBy: string, sortOrder: number): Promise<ResponseData> {
@@ -69,16 +72,32 @@ export class VideoManager {
         return video;
     }
 
+    public deleteTempFiles(file) {
+        unlink(file, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
+    }
+
     public getVideo(id: string): Promise<Video> {
         return this.videoDatastore.getById(id);
     }
 
-    public async updateVideo(id: string, item: Video): Promise<Video> {
-        const oldVideo = await this.mediaDatastore.getById(id);
-        const newVideo = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: id }, item);
+    public async updateVideo(item: Video): Promise<Video> {
+        const oldVideo = await this.mediaDatastore.getById(item._id);
+
+        if ( !item.selectedThumbnail.includes("http://res.cloudinary.com") ) {
+            const promise = this.gravityCloudService.upload(item.selectedThumbnail);
+            const resolvedPromise: Array<string> = await Promise.all([promise]);
+            this.deleteTempFiles(item.selectedThumbnail);
+            item.selectedThumbnail = resolvedPromise[0];
+        }
+
+        const newVideo = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: item._id }, item);
 
         if (oldVideo.talent !== item.talent) {
-            const updateOldTalentPromise = this.talentDatastore.removeMediaById({ _id: oldVideo.talent }, id);
+            const updateOldTalentPromise = this.talentDatastore.removeMediaById({ _id: oldVideo.talent }, item._id);
             const updtateNewTalentPromise = this.talentDatastore.addMediaToTalent({ _id: newVideo.talent }, newVideo);
             await Promise.all([updateOldTalentPromise, updtateNewTalentPromise]);
         }
