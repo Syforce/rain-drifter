@@ -1,6 +1,7 @@
 import { AbstractRouter, Request } from 'waterfall-gate';
 import { MediaManager } from '../manager/media.manager';
 import { Media } from '../model/media.model';
+import { ResponseData } from 'src/util/respone-data.model';
 
 export class MediaRouter extends AbstractRouter {
     private mediaManager: MediaManager = new MediaManager();
@@ -32,8 +33,13 @@ export class MediaRouter extends AbstractRouter {
         return this.mediaManager.getMediasByTalentId(id);
     }
 
-    private getMedias(request: Request): Promise<Array<Media>> {
-        return this.mediaManager.getMedias();
+    private getMedias(request: Request): Promise<ResponseData> {
+        const currentPage: number = +request.query.currentPage;
+        const itemsPerPage: number = +request.query.itemsPerPage;
+        const sortBy: string = request.query.sortBy as string;
+        const sortOrder: number = +request.query.sortOrder;
+
+        return this.mediaManager.getMedias(currentPage, itemsPerPage, sortBy, sortOrder);
     }
     
     private createMedia(request: Request): Promise<Media> {
