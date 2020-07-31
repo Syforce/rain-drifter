@@ -77,8 +77,11 @@ export class VideoManager {
         const oldVideo = await this.mediaDatastore.getById(id);
         const newVideo = await this.videoDatastore.getOneByOptionsAndUpdate({ _id: id }, item);
 
-        this.talentDatastore.removeMediaById({ _id: oldVideo.talent }, id);
-        this.talentDatastore.addMediaToTalent({ _id: newVideo.talent }, newVideo);
+        if (oldVideo.talent !== item.talent) {
+            const updateOldTalentPromise = this.talentDatastore.removeMediaById({ _id: oldVideo.talent }, id);
+            const updtateNewTalentPromise = this.talentDatastore.addMediaToTalent({ _id: newVideo.talent }, newVideo);
+            await Promise.all([updateOldTalentPromise, updtateNewTalentPromise]);
+        }
 
         return newVideo;
     }

@@ -15,6 +15,18 @@ export const TalentSchema: Schema = new Schema({
 	profileImage: String,
 	listingCroppedImage: String,
 	profileCroppedImage: String,
+	listingCropperConfig: {
+		x1: Number,
+		x2: Number,
+		y1: Number,
+		y2: Number
+	},
+	profileCropperConfig: {
+		x1: Number,
+		x2: Number,
+		y1: Number,
+		y2: Number
+	},
 	medias: [{
 		type: Schema.ObjectId,
 		ref: 'Media'
@@ -37,5 +49,17 @@ export interface Talent {
 	profileImage?: string;
 	listingCroppedImage?: string;
 	profileCroppedImage?: string;
+	listingCropperConfig?: {
+		x1: number,
+		x2: number,
+		y1: number,
+		y2: number
+	};
+	profileCropperConfig?: {
+		x1: number,
+		x2: number,
+		y1: number,
+		y2: number
+	};
 	medias?: Array<Media>;
 }
