@@ -58,7 +58,8 @@ export class VideoRouter extends AbstractRouter {
     }
     
     private createVideo(request: Request): Promise<Video> {
-        let body: any = JSON.parse(JSON.stringify(request.body));
+        const body: any = JSON.parse(JSON.stringify(request.body));
+
         return this.videoManager.createVideo(body);
     }
 
