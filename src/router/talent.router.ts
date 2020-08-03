@@ -110,6 +110,8 @@ export class TalentRouter extends AbstractRouter {
         body.profileImage = profileImage;
         body.listingCroppedImage = listingCroppedImage;
         body.profileCroppedImage = profileCroppedImage;
+        body.listingCropperConfig = JSON.parse(body.listingCropperConfig);
+        body.profileCropperConfig = JSON.parse(body.profileCropperConfig);
         
         return this.talentManager.updateTalent(body);
     }
