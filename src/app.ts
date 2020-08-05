@@ -15,13 +15,6 @@ import { MediaRouter } from './router/media.router';
 import { ImageRouter } from './router/image.router';
 import { VideoRouter } from './router/video.router';
 
-import { TalentManager } from './manager/talent.manager';
-import { MediaManager } from './manager/media.manager';
-import { ImageManager } from './manager/image.manager';
-import { VideoManager } from './manager/video.manager';
-
-import { Talent } from './model/talent.model';
-
 import { CONFIG } from './config';
 
 class App {
@@ -29,10 +22,6 @@ class App {
 	private waterfallGateService: WaterfallGateService;
 	private rockGatherService: RockGatherService;
 	private gravityCloudService: GravityCloudService;
-	private talentManager: TalentManager;
-	private meidaManager: MediaManager;
-	private imageManager: ImageManager;
-	private videoManager: VideoManager;
 
 	public app;
 
@@ -43,6 +32,8 @@ class App {
 	private init() {
 		this.iceContainerService = IceContainerService.getInstance();
 		this.waterfallGateService = WaterfallGateService.getInstance();
+		this.rockGatherService = RockGatherService.getInstance();
+		this.gravityCloudService = GravityCloudService.getInstance();
 
 		this.app = Express();
 		
@@ -58,20 +49,11 @@ class App {
 		this.iceContainerService.registerDatastore(VideoDatastore);
 
 		this.iceContainerService.init(CONFIG.database);
-
-		this.talentManager = new TalentManager();
-		this.meidaManager = new MediaManager();
-		this.imageManager = new ImageManager();
-		this.videoManager = new VideoManager();
 	}
 
 	private startStorage() {
-			this.rockGatherService = RockGatherService.getInstance();
-			this.gravityCloudService = GravityCloudService.getInstance();
-
-			this.rockGatherService.init(CONFIG.file);
-			this.gravityCloudService.init(CONFIG.storage);
-
+		this.rockGatherService.init(CONFIG.file);
+		this.gravityCloudService.init(CONFIG.storage);
 	}
 
 	private startServer() {
@@ -87,7 +69,7 @@ class App {
 		this.waterfallGateService.registerRouter(ImageRouter);
 		this.waterfallGateService.registerRouter(VideoRouter);
 
-		this.app = this.waterfallGateService.init(CONFIG.server, true);
+		 this.waterfallGateService.init(CONFIG.server, true);
 
 // 		this.app.set('view engine', 'pug');
 // 		this.app.set('views', join(__dirname, '../', 'views'));
