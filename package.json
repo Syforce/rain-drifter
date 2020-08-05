@@ -2,7 +2,9 @@
     "name": "rain-drifter",
     "version": "0.0.1",
     "scripts": {
-        "watch": "nodemon"
+        "watch": "nodemon",
+        "start": "node ./dist/app.js",
+        "build": "tsc"
     },
     "dependencies": {
         "express": "^4.17.1",
