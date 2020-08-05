@@ -1,5 +1,5 @@
-import { ConnectionConfig } from 'ice-container';
 import { ServerConnectionConfig } from 'waterfall-gate';
+import { ConnectionConfig } from 'ice-container';
 import { FileStorageConfig } from 'rock-gather';
 import { StorageConfig } from 'gravity-cloud';
 
